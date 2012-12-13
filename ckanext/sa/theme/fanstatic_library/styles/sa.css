@@ -50,6 +50,7 @@ a {
 .module-heading,
 .page-header {
   background: #f6f6ee;
+  filter: none;
 }
 .module-heading {
   border-bottom-color: #e4e4cd;
