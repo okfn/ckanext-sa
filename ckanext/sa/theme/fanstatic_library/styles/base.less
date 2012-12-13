@@ -1,0 +1,56 @@
+body {
+	background: @saBackgroundColor;
+}
+
+.site-footer {
+	color: #888;
+	label,
+	small {
+		color: #888;
+	}
+	a {
+		color: @saLinkColor;
+	}
+}
+
+.main,
+[role="main"] {
+	width: 980px;
+	margin: 0 auto;
+	background-color: @saContentColor;
+	border: 1px solid darken(@saContentColor, 20%);
+	border-top: 4px solid @saPrimaryColor;
+	.border-radius(0 0 3px 3px);
+}
+
+a {
+	color: @saLinkColor;
+}
+
+.dropdown-menu li > a:hover {
+	background-color: @saLinkColor;
+}
+
+.btn-primary {
+	background: @saPrimaryColor !important;
+	&:hover {
+		background: darken(@saPrimaryColor, 10) !important;
+	}
+}
+
+.attribution .ckan-footer-logo {
+	background-image: url(/images/ckan-logo-footer.png);
+}
+
+.module-heading,
+.page-header {
+	background: @saFadedColor;
+}
+
+.module {
+	border: 1px solid darken(@saFadedColor, 10%);
+	.box-shadow(none);
+	.module-heading {
+		border-bottom-color: darken(@saFadedColor, 10%);
+	}
+}
