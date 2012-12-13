@@ -51,13 +51,7 @@ a {
 .page-header {
   background: #f6f6ee;
 }
-.module {
-  border: 1px solid #e4e4cd;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-.module .module-heading {
+.module-heading {
   border-bottom-color: #e4e4cd;
 }
 header.masthead {
