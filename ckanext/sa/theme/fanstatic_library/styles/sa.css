@@ -1,12 +1,16 @@
 .site-footer,
 header.masthead {
   background: none;
+  filter: none;
 }
 .main::after,
 [role="main"]::after,
 .main::before,
 [role="main"]::before {
   display: none;
+}
+.ie7 .masthead nav {
+  display: block;
 }
 body {
   background: #ffffff;

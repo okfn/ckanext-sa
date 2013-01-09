@@ -1,6 +1,7 @@
 .site-footer,
 header.masthead {
 	background: none;
+	filter: none;
 }
 
 // Hides white border
@@ -10,4 +11,9 @@ header.masthead {
 	&::before {
 		display: none;
 	}
+}
+
+// Fix for IE7 header nav
+.ie7 .masthead nav {
+	display: block;
 }
