@@ -1,0 +1,42 @@
+header.masthead {
+	.navigation ul.unstyled li a.active  {
+		background-color: @saPrimaryColor;
+		color: @saFadedColor !important;
+	}
+	.account {
+		padding: 0;
+		a {
+			float: left;
+			display: block;
+			border-width: 0;
+			padding: 5px 10px;
+			border-left: 1px solid #DBDAB9;
+			&:hover {
+				color: #000;
+			}
+			&:first-child {
+				border-left-width: 0;
+			}
+		}
+		a.image {
+			position: relative;
+			top: 2px;
+			margin: 0 5px;
+			padding: 0;
+			img {
+				border-right-width: 0;
+				opacity: 1;
+				.border-radius(2px);
+			}
+		}
+	}
+}
+
+.resource-list .resource-item {
+	position: relative;
+	.btn {
+		position: absolute;
+		top: 15px;
+		right: 10px;
+	}
+}
