@@ -161,18 +161,38 @@ header.masthead .account.authed {
 .hero .module-dark .module-content {
   background-color: #ca7400;
 }
+header.masthead {
+  height: 105px;
+}
+header.masthead .container {
+  height: 105px;
+}
+header.masthead nav {
+  line-height: 35px;
+}
+header.masthead .navigation {
+  display: block;
+  padding-left: 0;
+}
 header.masthead .navigation ul.unstyled li a.active {
   background-color: #ca7400;
   color: #f6f6ee !important;
 }
 header.masthead .account {
+  clear: both;
   padding: 0;
+  min-height: 0;
+  bottom: 60px;
+}
+header.masthead .account .links {
+  display: block;
+  top: 0;
 }
 header.masthead .account a {
   float: left;
   display: block;
   border-width: 0;
-  padding: 5px 10px;
+  padding: 7px 10px !important;
   border-left: 1px solid #DBDAB9;
 }
 header.masthead .account a:hover {
@@ -181,18 +201,16 @@ header.masthead .account a:hover {
 header.masthead .account a:first-child {
   border-left-width: 0;
 }
-header.masthead .account a.image {
-  position: relative;
-  top: 2px;
-  margin: 0 5px;
-  padding: 0;
+header.masthead .account a.sub {
+  color: #197FC9;
+  font-size: 13px;
+  clear: none;
 }
-header.masthead .account a.image img {
-  border-right-width: 0;
-  opacity: 1;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
+header.masthead .account a.image {
+  display: none;
+}
+header.masthead .account.avatar {
+  padding-left: 0;
 }
 .resource-list .resource-item {
   position: relative;
