@@ -27,10 +27,7 @@ body {
 }
 .main,
 [role="main"] {
-  width: 980px;
-  margin: 0 auto;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
+  background: #ffffff;
   border-top: 4px solid #ca7400;
   -webkit-border-radius: 0 0 3px 3px;
   -moz-border-radius: 0 0 3px 3px;
@@ -59,6 +56,26 @@ a {
 .module-heading {
   border-bottom-color: #e4e4cd;
 }
+header.account-masthead {
+  background-color: #f6f6ee;
+  margin-bottom: 10px;
+}
+header.account-masthead .account {
+  color: #000;
+}
+header.account-masthead .account ul li {
+  border-left-color: #d3d3ab;
+}
+header.account-masthead .account ul li a {
+  color: #000;
+}
+header.account-masthead .account ul li a:hover {
+  color: #000;
+  background-color: #d3d3ab;
+}
+header.account-masthead .account ul li.notifications a span {
+  color: #f6f6ee;
+}
 header.masthead {
   position: relative;
   height: 100px;
@@ -86,7 +103,7 @@ header.masthead .content {
 }
 header.masthead .navigation {
   float: none;
-  margin: 0 -21px;
+  margin-right: 0;
   background-color: #f6f6ee;
   border: 1px solid #e4e4cd;
   border-bottom-width: 0;
@@ -94,63 +111,38 @@ header.masthead .navigation {
   -moz-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
 }
-header.masthead .navigation ul.unstyled {
+header.masthead .navigation ul.nav {
   margin: 0;
   padding: 0 5px;
 }
-header.masthead .navigation ul.unstyled li a {
+header.masthead .navigation ul.nav li a {
   font-size: 16px;
   color: #000;
   padding: 10px 15px;
+  margin: 0;
+  font-weight: bold;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
 }
-header.masthead .navigation ul.unstyled li.active a {
+header.masthead .navigation ul.nav li a:hover {
+  background-color: transparent;
+  text-decoration: underline;
+}
+header.masthead .navigation ul.nav li.active a {
   background-color: #ca7400;
   color: #f6f6ee !important;
 }
 header.masthead .site-search {
   position: absolute;
-  right: -8px;
+  right: 3px;
   top: 3px;
   z-index: 1;
 }
-header.masthead .account {
-  position: absolute;
-  right: -21px;
-  bottom: 52px;
-  z-index: 1;
-  background-color: #f6f6ee;
-  -webkit-box-shadow: inset 0 2px 4px #d3d3ab;
-  -moz-box-shadow: inset 0 2px 4px #d3d3ab;
-  box-shadow: inset 0 2px 4px #d3d3ab;
-}
-header.masthead .account a {
-  color: #197fc9;
-}
-header.masthead .account a.sub {
-  border-left-color: #d3d3ab !important;
-}
-header.masthead .account .button {
-  color: #f6f6ee;
-  background-color: #197fc9;
-  text-shadow: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-header.masthead .account .button:hover {
-  background-color: #5dafeb !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-  box-shadow: none !important;
-}
-header.masthead .account .image img {
-  border-right-color: #0e466e;
-}
-header.masthead .account.authed {
-  margin-right: 0;
+header.masthead .site-search input[type="text"] {
+  border-color: #d3d3ab;
+  font-size: 12px;
+  padding: 2px 8px;
 }
 .hero {
   border-bottom-width: 0;
