@@ -1,3 +1,4 @@
+import ckan.logic as logic
 from ckan.lib.cli import CkanCommand
 
 import logging
@@ -13,7 +14,6 @@ class DataStore(CkanCommand):
     paster datastore [package-id]
             - Update all resources or just those belonging to a specific
               package if a package id is provided.
-
     """
     summary = __doc__.split('\n')[0]
     usage = __doc__
@@ -25,4 +25,6 @@ class DataStore(CkanCommand):
         """
         Parse command line arguments and call the appropriate method
         """
-        print "here"
+        if self.args and self.args[0] in ['--help', '-h', 'help']:
+            print Datastorer.__doc__
+            return
