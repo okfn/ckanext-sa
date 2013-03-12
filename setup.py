@@ -24,8 +24,11 @@ setup(
 	],
 	entry_points=\
 	"""
-        [ckan.plugins]
+	[paste.paster_command]
+	datastore = ckanext.sa.commands:DataStore
+
+	[ckan.plugins]
 	# Add plugins here
-    sa_customizations=ckanext.sa.plugin:SACustomizations
+	sa_customizations=ckanext.sa.plugin:SACustomizations
 	""",
 )
