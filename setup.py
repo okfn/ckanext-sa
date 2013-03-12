@@ -25,7 +25,7 @@ setup(
 	entry_points=\
 	"""
 	[paste.paster_command]
-	datastore = ckanext.sa.commands:DataStore
+	datastore_upload = ckanext.sa.commands:DataStore
 
 	[ckan.plugins]
 	# Add plugins here
