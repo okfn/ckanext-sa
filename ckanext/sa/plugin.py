@@ -31,12 +31,14 @@ class SACustomizations(plugins.SingletonPlugin):
         toolkit.add_resource('theme/fanstatic_library', 'ckanext-sa')
 
     def before_map(self, route_map):
-        with routes.mapper.SubMapper(route_map, controller='ckanext.sa.plugin:SAController') as m:
+        with routes.mapper.SubMapper(route_map,
+                controller='ckanext.sa.plugin:SAController') as m:
             m.connect('accessibility', '/accessibility',
                     action='accessibility')
-            m.connect('disclaimer', '/disclaimer',
-                    action='disclaimer')
+            m.connect('disclaimer', '/disclaimer', action='disclaimer')
             m.connect('privacy', '/privacy', action='privacy')
+            m.connect('termsandconditions', '/termsandconditions',
+                    action='termsandconditions')
         return route_map
 
     def after_map(self, route_map):
@@ -56,3 +58,6 @@ class SAController(base.BaseController):
 
     def privacy(self):
         return base.render('privacy.html')
+
+    def termsandconditions(self):
+        return base.render('termsandconditions.html')

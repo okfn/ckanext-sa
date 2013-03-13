@@ -1,0 +1,22 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _('Terms and Conditions') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Terms and Conditions'), controller='ckanext.sa.plugin:SAController', action='termsandconditions' %}</li>
+{% endblock %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+      {% block about %}
+        <p>Please refer to the
+        <a href="http://sa.gov.au/site/terms-and-conditions">terms of use on
+        sa.gov.au</a>.</p>
+      {% endblock %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}
+
