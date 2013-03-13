@@ -2,6 +2,7 @@
 {% block footer_content %}
   <nav class="row-fluid">
       <ul class="unstyled" style="float:left; margin-right:6em;">
+        <li><a href="/">{{ _('Home') }}</a></li>
         <li><a href="{{ h.url_for(controller='home', action='about') }}">{{ _('About {0}').format(g.site_title) }}</a></li>
         <li><a href="/accessibility">{{ _('Accessibility') }}</a></li>
         <li><a href="/disclaimer">{{ _('Disclaimer') }}</a></li>
