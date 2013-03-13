@@ -1,0 +1,24 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _('Accessibility') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Accessibility'), controller='ckanext.sa.plugin:SAController', action='accessibility' %}</li>
+{% endblock %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+      {% block about %}
+      <p>We are committed to making this website accessible to all users,
+        regardless of circumstances. We are actively working to increase the
+        accessibility and usability of the site; if you have any questions or
+        suggestions regarding the accessibility of this site, or if you have
+        difficulty using any part of it, please contact us at
+        <a href="mailto:DataSA@sa.gov.au">DataSA@sa.gov.au</a>.</p>
+      {% endblock %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}

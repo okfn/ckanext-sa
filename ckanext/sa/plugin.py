@@ -1,6 +1,7 @@
 import os
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+import ckan.lib.base as base
 
 
 class SACustomizations(plugins.SingletonPlugin):
@@ -27,6 +28,9 @@ class SACustomizations(plugins.SingletonPlugin):
         toolkit.add_resource('theme/fanstatic_library', 'ckanext-sa')
 
     def before_map(self, route_map):
+        route_map.connect('accessibility', '/accessibility',
+                controller='ckanext.sa.plugin:SAController',
+                action='accessibility')
         return route_map
 
     def after_map(self, route_map):
@@ -34,3 +38,9 @@ class SACustomizations(plugins.SingletonPlugin):
 
     def get_helpers(self):
         return {}
+
+
+class SAController(base.BaseController):
+
+    def accessibility(self):
+        return base.render('accessibility.html')
