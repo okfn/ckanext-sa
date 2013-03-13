@@ -1,0 +1,18 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _('Contact') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Contact'), controller='ckanext.sa.plugin:SAController', action='contact' %}</li>
+{% endblock %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+      <p>Data.sa can be contacted at
+      <a href="mailto:DataSA@sa.gov.au">DataSA@sa.gov.au</a>.</p>
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}
