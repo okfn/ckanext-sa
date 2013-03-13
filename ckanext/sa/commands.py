@@ -1,3 +1,11 @@
+import json
+import requests
+import datetime
+import itertools
+import messytables
+from messytables import (AnyTableSet, types_processor,
+                         headers_guess, headers_processor, headers_make_unique,
+                         type_guess, offset_processor)
 from pylons import config
 from ckan.lib.cli import CkanCommand
 import ckan.logic as logic
@@ -7,7 +15,18 @@ from fetch_resource import download
 import logging
 logger = logging.getLogger()
 
+TYPE_MAPPING = {
+    messytables.types.StringType: 'text',
+    messytables.types.IntegerType: 'numeric',  # 'int' may not be big enough,
+                    # and type detection may not realize it needs to be big
+    messytables.types.FloatType: 'float',
+    messytables.types.DecimalType: 'numeric',
+    messytables.types.DateType: 'timestamp',
+    messytables.types.DateUtilType: 'timestamp'
+}
 
+class DatastorerException(Exception):
+    pass
 
 
 class DataStore(CkanCommand):
@@ -80,6 +99,8 @@ class DataStore(CkanCommand):
         packages = self._get_all_packages()
         context = {
             'site_url': config['ckan.site_url'],
+            'apikey': user.get('apikey'),
+            'site_user_apikey': user.get('apikey'),
             'username': user.get('name'),
             'webstore_url': config.get('ckan.webstore_url')
         }
@@ -97,7 +118,7 @@ class DataStore(CkanCommand):
                 logger.info('Datastore resource from resource {0} from '
                             'package {0}'.format(resource['url'],
                                                  package['name']))
-                push_to_datastore(context, resource)
+                self.push_to_datastore(context, resource)
                 break
             break
 
@@ -150,7 +171,17 @@ class DataStore(CkanCommand):
                              headers={'Content-Type': 'application/json',
                                       'Authorization': context['apikey']},
                              )
-            check_response_and_retry(response, datastore_create_request_url, logger)
+            try:
+                if not response.status_code:
+                    raise DatastorerException('Datastore is not reponding at %s with '
+                            'response %s' % (datastore_create_request_url, response))
+            except Exception:
+                pass
+                #TODO: Put retry code here
+            if response.status_code not in (201, 200):
+                logger.error('Response was {0}'.format(self.get_response_error(response)))
+                raise DatastorerException('Datastorer bad response code (%s) on %s. Response was %s' %
+                        (response.status_code, datastore_create_request_url, response))
 
         # Delete any existing data before proceeding. Otherwise 'datastore_create' will
         # append to the existing datastore. And if the fields have significantly changed,
@@ -164,7 +195,7 @@ class DataStore(CkanCommand):
                             )
             if not response.status_code or response.status_code not in (200, 404):
                 # skips 200 (OK) or 404 (datastore does not exist, no need to delete it)
-                logger.error('Deleting existing datastore failed: {0}'.format(get_response_error(response)))
+                logger.error('Deleting existing datastore failed: {0}'.format(self.get_response_error(response)))
                 raise DatastorerException("Deleting existing datastore failed.")
         except requests.exceptions.RequestException as e:
             logger.error('Deleting existing datastore failed: {0}'.format(str(e)))
@@ -207,3 +238,38 @@ class DataStore(CkanCommand):
         if response.status_code not in (201, 200):
             raise DatastorerException('Ckan bad response code (%s). Response was %s' %
                                  (response.status_code, response.content))
+
+
+    def get_response_error(self, response):
+        if not response.content:
+            return repr(response)
+        try:
+            d = json.loads(response.content)
+        except ValueError:
+            return repr(response) + " <" + response.content + ">"
+        if "error" in d:
+            d = d["error"]
+        return repr(response) + "\n" + json.dumps(d, sort_keys=True, indent=4) + "\n"
+
+
+def stringify_processor():
+    def to_string(row_set, row):
+        for cell in row:
+            if not cell.value:
+                cell.value = None
+            else:
+                cell.value = unicode(cell.value)
+        return row
+    return to_string
+
+
+def datetime_procesor():
+    ''' Stringifies dates so that they can be parsed by the db
+    '''
+    def datetime_convert(row_set, row):
+        for cell in row:
+            if isinstance(cell.value, datetime.datetime):
+                cell.value = cell.value.isoformat()
+                cell.type = messytables.StringType()
+        return row
+    return datetime_convert
