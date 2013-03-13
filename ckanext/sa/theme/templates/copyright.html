@@ -1,0 +1,33 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _('Copyright') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Copyright'), controller='ckanext.sa.plugin:SAController', action='copyright' %}</li>
+{% endblock %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+      <p>The Government of South Australia supports and encourages the
+      dissemination and exchange of public sector information, and endorses the
+      use of the <a href="http://www.ausgoal.gov.au/">Australian Governments Open Access and Licensing Framework</a> 
+      by its agencies.<p>
+
+      <p>With the exception of the Piping Shrike emblem, images, and other
+      material or devices protected by a trademark and subject to review by the
+      Government of South Australia at all times, the content of this website is
+      licensed under the <a href="http://creativecommons.org/licenses/by/3.0/au/deed.en">Creative Commons Australia Attribution 3.0 Licence</a>.
+      The Government of South Australia requests attribution as 'Government of
+      South Australia'. All other rights are reserved.</p>
+
+      <p>The Government of South Australia has undertaken reasonable enquiries to
+      identify material owned by third parties and secure permission for its
+      reproduction. Permission may need to be obtained from third parties to
+      re-use their material.</p>
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}
+

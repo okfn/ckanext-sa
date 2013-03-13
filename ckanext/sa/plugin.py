@@ -40,6 +40,7 @@ class SACustomizations(plugins.SingletonPlugin):
             m.connect('termsandconditions', '/termsandconditions',
                     action='termsandconditions')
             m.connect('contact', '/contact', action='contact')
+            m.connect('copyright', '/copyright', action='copyright')
         return route_map
 
     def after_map(self, route_map):
@@ -65,3 +66,6 @@ class SAController(base.BaseController):
 
     def contact(self):
         return base.render('contact.html')
+
+    def copyright(self):
+        return base.render('copyright.html')
