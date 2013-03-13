@@ -23,6 +23,24 @@ class DataStore(CkanCommand):
     max_args = 1
     MAX_PER_PAGE = 50
 
+    DATA_FORMATS = [
+        'csv',
+        'tsv',
+        'text/csv',
+        'txt',
+        'text/plain',
+        'text/tsv',
+        'text/tab-separated-values',
+        'xls',
+        'application/ms-excel',
+        'application/vnd.ms-excel',
+        'application/xls',
+        'application/octet-stream',
+        'text/comma-separated-values',
+        'application/x-zip-compressed',
+        'application/zip',
+    ]
+
     def _get_all_packages(self):
         page = 1
         context = {
@@ -55,3 +73,24 @@ class DataStore(CkanCommand):
         user = logic.get_action('get_site_user')({'model': model,
                                             'ignore_auth': True}, {})
         packages = self._get_all_packages()
+
+        for package in packages:
+            for resource in package.get('resources', []):
+                mimetype = resource['mimetype']
+                if mimetype and (mimetype not in self.DATA_FORMATS
+                        or resource['format'].lower() not in
+                        self.DATA_FORMATS):
+                    logger.warn('Skipping resource {0} from package {1} '
+                            'because MIME type {2} or format {3} is '
+                            'unrecognized'.format(resource['url'],
+                            package['name'], mimetype, resource['format']))
+                    continue
+                logger.info('Datastore resource from resource {0} from '
+                            'package {0}'.format(resource['url'],
+                                                 package['name']))
+                # download resource
+                # delete resource from datastore
+                # upload to datastore
+                # update resource with datastore URL
+                break
+
