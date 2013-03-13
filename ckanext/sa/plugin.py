@@ -36,6 +36,7 @@ class SACustomizations(plugins.SingletonPlugin):
                     action='accessibility')
             m.connect('disclaimer', '/disclaimer',
                     action='disclaimer')
+            m.connect('privacy', '/privacy', action='privacy')
         return route_map
 
     def after_map(self, route_map):
@@ -52,3 +53,6 @@ class SAController(base.BaseController):
 
     def disclaimer(self):
         return base.render('disclaimer.html')
+
+    def privacy(self):
+        return base.render('privacy.html')

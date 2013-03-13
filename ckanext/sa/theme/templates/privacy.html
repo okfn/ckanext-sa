@@ -1,0 +1,30 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _('Privacy') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Privacy'), controller='ckanext.sa.plugin:SAController', action='privacy' %}</li>
+{% endblock %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+      {% block about %}
+        <p>Data.SA is operated in compliance with the
+        <a href="http://www.archives.sa.gov.au/privacy/principles.html">
+        South Australian Government's Information Privacy Principles</a>.</p>
+
+        <p>This service records the IP address of every hit to the site. This
+        information is logged and analysed at the end of each month to
+        determine the site's usage statistics.</p>
+
+        <p>No personal details are provided to any individuals or
+        organisations, and access to this information is restricted to members
+        of the data.sa team unless said contact is already published with the
+        authors consent.</p>
+      {% endblock %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}
