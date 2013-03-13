@@ -1,4 +1,7 @@
 import os
+
+import routes.mapper
+
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import ckan.lib.base as base
@@ -28,9 +31,11 @@ class SACustomizations(plugins.SingletonPlugin):
         toolkit.add_resource('theme/fanstatic_library', 'ckanext-sa')
 
     def before_map(self, route_map):
-        route_map.connect('accessibility', '/accessibility',
-                controller='ckanext.sa.plugin:SAController',
-                action='accessibility')
+        with routes.mapper.SubMapper(route_map, controller='ckanext.sa.plugin:SAController') as m:
+            m.connect('accessibility', '/accessibility',
+                    action='accessibility')
+            m.connect('disclaimer', '/disclaimer',
+                    action='disclaimer')
         return route_map
 
     def after_map(self, route_map):
@@ -44,3 +49,6 @@ class SAController(base.BaseController):
 
     def accessibility(self):
         return base.render('accessibility.html')
+
+    def disclaimer(self):
+        return base.render('disclaimer.html')

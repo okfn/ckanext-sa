@@ -1,0 +1,63 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _('Disclaimer') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Disclaimer'), controller='ckanext.sa.plugin:SAController', action='disclaimer' %}</li>
+{% endblock %}
+
+{% block primary %}
+  <article class="module">
+    <div class="module-content">
+      {% block about %}
+        <p>Use of the information and data contained on this site on these
+        pages is at your sole risk.</p>
+
+        <p>If you rely on the information on this Site you are responsible for
+        ensuring by independent verification its accuracy or completeness.</p>
+
+        <p>If you use automatic language translation services in connection
+        with this Site you do so at your own risk.</p>
+
+        <p>The information and data on this Site is subject to change without
+        notice. The Government may revise this Disclaimer at any time by
+        updating this posting.</p>
+
+        <p>The State of South Australia, its agents, instrumentalities,
+        officers and employees:</p>
+
+        <ul>
+          <li>make no representations, express or implied, as to the accuracy
+          of the information and data contained on this Site;</li>
+          <li>make no representations, express or implied, as to the accuracy
+          or usefulness of any translation of the information on this Site or
+          any linked site into another language;</li>
+          <li>accept no liability for any use of the said information and data
+          or reliance placed on it (including translated information and
+          data);</li>
+          <li>make no representations, either expressed or implied, as to the
+          suitability of the said information and data for any particular
+          purpose;</li>
+          <li>make no warranties that the said information and data is free of
+          infection by computer viruses or other contamination;</li>
+          <li>do not sponsor, endorse or necessarily approve of any material on
+          sites linked from or to this Site;do not make any warranties or
+          representations regarding the quality,</li>
+          <li>do not make any warranties or representations regarding the
+          quality, accuracy, merchantability or fitness for purpose of any
+          material on sites linked from or to this Site;</li>
+          <li>do not make any warranties or representations that material on
+          other web sites to which this site is linked does not infringe the
+          intellectual property rights of any person anywhere in the world; and
+          do not authorise the infringement of any intellectual property rights
+          contained in material in other sites by linking this Site to those
+          other sites.</li>
+        </ul>
+
+      {% endblock %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}
+
