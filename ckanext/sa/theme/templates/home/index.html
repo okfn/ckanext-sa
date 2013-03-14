@@ -5,7 +5,7 @@
       {% set org_dict = h.organization_show(org_name) %}
       <div class="span6">
         <div class="box">
-          {% snippet 'snippets/group_item.html', group=org_dict, truncate=100 %}
+          {% snippet 'snippets/organization_item.html', organization=org_dict, truncate=100 %}
         </div>
       </div>
     {% endfor %}
