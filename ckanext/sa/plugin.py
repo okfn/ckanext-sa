@@ -7,9 +7,15 @@ import ckan.plugins.toolkit as toolkit
 import ckan.lib.base as base
 
 
+def organization_show(name):
+    '''Return the organization dict for the given organization.'''
+    return toolkit.get_action('organization_show')(data_dict={'id': name})
+
+
 class SACustomizations(plugins.SingletonPlugin):
     plugins.implements(plugins.IRoutes)
     plugins.implements(plugins.IConfigurer, inherit=True)
+    plugins.implements(plugins.IConfigurable, inherit=True)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.ITemplateHelpers)
 
@@ -30,6 +36,15 @@ class SACustomizations(plugins.SingletonPlugin):
 
         toolkit.add_resource('theme/fanstatic_library', 'ckanext-sa')
 
+    def configure(self, config):
+        # Add the list of 'featured organizations' from the ini file to the
+        # Jinja template environment.
+        featured_orgs = config.get('ckan.featured_organizations', '')
+        featured_orgs = [org.strip() for org in featured_orgs.split(',')
+                if org]
+        jinja_env = config['pylons.app_globals'].jinja_env
+        jinja_env.globals['featured_orgs'] = featured_orgs
+
     def before_map(self, route_map):
         with routes.mapper.SubMapper(route_map,
                 controller='ckanext.sa.plugin:SAController') as m:
@@ -47,7 +62,7 @@ class SACustomizations(plugins.SingletonPlugin):
         return route_map
 
     def get_helpers(self):
-        return {}
+        return {'organization_show': organization_show}
 
 
 class SAController(base.BaseController):
