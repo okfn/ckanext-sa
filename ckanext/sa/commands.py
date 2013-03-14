@@ -119,8 +119,6 @@ class DataStore(CkanCommand):
                             'package {0}'.format(resource['url'],
                                                  package['name']))
                 self.push_to_datastore(context, resource)
-                break
-            break
 
 
     def push_to_datastore(self, context, resource):
