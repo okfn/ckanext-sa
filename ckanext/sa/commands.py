@@ -158,7 +158,7 @@ class DataStore(CkanCommand):
 
         ckan_url = context['site_url'].rstrip('/')
 
-        datastore_create_request_url = '%s/api/action/datastore_create' % (ckan_url)
+        datastore_create_request_url = '%s/api/3/action/datastore_create' % (ckan_url)
 
         guessed_type_names = [TYPE_MAPPING[type(gt)] for gt in guessed_types]
 
@@ -188,7 +188,7 @@ class DataStore(CkanCommand):
         # it may also fail.
         try:
             logger.info('Deleting existing datastore (it may not exist): {0}.'.format(resource['id']))
-            response = requests.post('%s/api/action/datastore_delete' % (ckan_url),
+            response = requests.post('%s/api/3/action/datastore_delete' % (ckan_url),
                             data=json.dumps({'resource_id': resource['id']}),
                             headers={'Content-Type': 'application/json',
                                     'Authorization': context['apikey']}
@@ -222,7 +222,7 @@ class DataStore(CkanCommand):
 
         logger.info("There should be {n} entries in {res_id}.".format(n=count, res_id=resource['id']))
 
-        ckan_request_url = ckan_url + '/api/action/resource_update'
+        ckan_request_url = ckan_url + '/api/3/action/resource_update'
 
         resource.update({
             'webstore_url': 'active',
