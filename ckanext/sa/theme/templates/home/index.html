@@ -1,0 +1,13 @@
+{% ckan_extends %}
+{% block secondary_content %}
+  <div class="row group-listing">
+    {% for org_name in featured_orgs %}
+      {% set org_dict = h.organization_show(org_name) %}
+      <div class="span6">
+        <div class="box">
+          {% snippet 'snippets/organization_item.html', organization=org_dict, truncate=100 %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
