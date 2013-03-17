@@ -102,7 +102,6 @@ def download(context, resource, max_content_length, data_formats,
 
     # get the resource and archive it
     try:
-        print url
         res = requests.get(url, timeout=url_timeout)
     except requests.exceptions.ConnectionError, e:
         raise DownloadError('Connection error: %s' % e)
@@ -208,7 +207,6 @@ def link_checker(context, data):
     else:
         # Send a head request
         try:
-            print url, url_timeout
             res = requests.head(url, timeout=url_timeout)
             headers = res.headers
         except httplib.InvalidURL, ve:

@@ -1,11 +1,8 @@
-import json
-import requests
 import datetime
 import itertools
 import messytables
-from messytables import (AnyTableSet, types_processor,
-                         headers_guess, headers_processor, headers_make_unique,
-                         type_guess, offset_processor)
+from messytables import (AnyTableSet, types_processor, headers_guess,
+        headers_processor, type_guess, offset_processor)
 from pylons import config
 from ckan.lib.cli import CkanCommand
 import ckan.logic as logic
@@ -98,11 +95,10 @@ class DataStore(CkanCommand):
                                             'ignore_auth': True}, {})
         packages = self._get_all_packages()
         context = {
-            'site_url': config['ckan.site_url'],
-            'apikey': user.get('apikey'),
-            'site_user_apikey': user.get('apikey'),
             'username': user.get('name'),
-            'webstore_url': config.get('ckan.webstore_url')
+            'user': user.get('name'),
+            'model': model
+
         }
         for package in packages:
             for resource in package.get('resources', []):
@@ -122,8 +118,12 @@ class DataStore(CkanCommand):
 
 
     def push_to_datastore(self, context, resource):
-        result  = download(context, resource,
-                self.max_content_length, self.DATA_FORMATS)
+        try:
+            result  = download(context, resource,
+                    self.max_content_length, self.DATA_FORMATS)
+        except Exception as e:
+            print unicode(e)
+            return
         content_type = result['headers'].get('content-type', '')\
                                         .split(';', 1)[0]  # remove parameters
 
@@ -154,50 +154,25 @@ class DataStore(CkanCommand):
         row_set.register_processor(types_processor(guessed_types, strict=True))
         row_set.register_processor(stringify_processor())
 
-        ckan_url = context['site_url'].rstrip('/')
-
-        datastore_create_request_url = '%s/api/3/action/datastore_create' % (ckan_url)
-
         guessed_type_names = [TYPE_MAPPING[type(gt)] for gt in guessed_types]
 
         def send_request(data):
-            request = {'resource_id': resource['id'],
-                       'fields': [dict(id=name, type=typename) for name, typename in zip(headers, guessed_type_names)],
-                       'records': data}
-            response = requests.post(datastore_create_request_url,
-                             data=json.dumps(request),
-                             headers={'Content-Type': 'application/json',
-                                      'Authorization': context['apikey']},
-                             )
-            try:
-                if not response.status_code:
-                    raise DatastorerException('Datastore is not reponding at %s with '
-                            'response %s' % (datastore_create_request_url, response))
-            except Exception:
-                pass
-                #TODO: Put retry code here
-            if response.status_code not in (201, 200):
-                logger.error('Response was {0}'.format(self.get_response_error(response)))
-                raise DatastorerException('Datastorer bad response code (%s) on %s. Response was %s' %
-                        (response.status_code, datastore_create_request_url, response))
+            data_dict = {'resource_id': resource['id'], 'fields':
+                    [dict(id=name, type=typename) for name, typename in
+                        zip(headers, guessed_type_names)], 'records': data}
+            response = logic.get_action('datastore_create')(
+                    context, data_dict)
+            return response
 
         # Delete any existing data before proceeding. Otherwise 'datastore_create' will
         # append to the existing datastore. And if the fields have significantly changed,
         # it may also fail.
+        logger.info('Deleting existing datastore (it may not exist): {0}.'.format(resource['id']))
         try:
-            logger.info('Deleting existing datastore (it may not exist): {0}.'.format(resource['id']))
-            response = requests.post('%s/api/3/action/datastore_delete' % (ckan_url),
-                            data=json.dumps({'resource_id': resource['id']}),
-                            headers={'Content-Type': 'application/json',
-                                    'Authorization': context['apikey']}
-                            )
-            if not response.status_code or response.status_code not in (200, 404):
-                # skips 200 (OK) or 404 (datastore does not exist, no need to delete it)
-                logger.error('Deleting existing datastore failed: {0}'.format(self.get_response_error(response)))
-                raise DatastorerException("Deleting existing datastore failed.")
-        except requests.exceptions.RequestException as e:
-            logger.error('Deleting existing datastore failed: {0}'.format(str(e)))
-            raise DatastorerException("Deleting existing datastore failed.")
+            response = logic.get_action('datastore_delete')(context,
+                    {'resource_id': resource['id']})
+        except Exception as e:
+            print unicode(e)
 
         logger.info('Creating: {0}.'.format(resource['id']))
 
@@ -220,34 +195,12 @@ class DataStore(CkanCommand):
 
         logger.info("There should be {n} entries in {res_id}.".format(n=count, res_id=resource['id']))
 
-        ckan_request_url = ckan_url + '/api/3/action/resource_update'
-
         resource.update({
             'webstore_url': 'active',
             'webstore_last_updated': datetime.datetime.now().isoformat()
         })
 
-        response = requests.post(
-            ckan_request_url,
-            data=json.dumps(resource),
-            headers={'Content-Type': 'application/json',
-                     'Authorization': context['apikey']})
-
-        if response.status_code not in (201, 200):
-            raise DatastorerException('Ckan bad response code (%s). Response was %s' %
-                                 (response.status_code, response.content))
-
-
-    def get_response_error(self, response):
-        if not response.content:
-            return repr(response)
-        try:
-            d = json.loads(response.content)
-        except ValueError:
-            return repr(response) + " <" + response.content + ">"
-        if "error" in d:
-            d = d["error"]
-        return repr(response) + "\n" + json.dumps(d, sort_keys=True, indent=4) + "\n"
+        response = logic.get_action('resource_update')(context, resource)
 
 
 def stringify_processor():
