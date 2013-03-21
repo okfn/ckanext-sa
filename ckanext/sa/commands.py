@@ -24,6 +24,25 @@ TYPE_MAPPING = {
 }
 
 
+DATA_FORMATS = [
+    'csv',
+    'tsv',
+    'text/csv',
+    'txt',
+    'text/plain',
+    'text/tsv',
+    'text/tab-separated-values',
+    'xls',
+    'application/ms-excel',
+    'application/vnd.ms-excel',
+    'application/xls',
+    'application/octet-stream',
+    'text/comma-separated-values',
+    'application/x-zip-compressed',
+    'application/zip',
+]
+
+
 class DatastorerException(Exception):
     pass
 
@@ -45,24 +64,6 @@ class AddToDataStore(CkanCommand):
     MAX_PER_PAGE = 50
     max_content_length = int(config.get('ckanext-archiver.max_content_length',
                              50000000))
-
-    DATA_FORMATS = [
-        'csv',
-        'tsv',
-        'text/csv',
-        'txt',
-        'text/plain',
-        'text/tsv',
-        'text/tab-separated-values',
-        'xls',
-        'application/ms-excel',
-        'application/vnd.ms-excel',
-        'application/xls',
-        'application/octet-stream',
-        'text/comma-separated-values',
-        'application/x-zip-compressed',
-        'application/zip',
-    ]
 
     def _get_all_packages(self):
         page = 1
@@ -90,8 +91,6 @@ class AddToDataStore(CkanCommand):
             print self.__doc__
             return
 
-        if self.args:
-            cmd = self.args[0]
         self._load_config()
         user = logic.get_action('get_site_user')({'model': model,
                                                  'ignore_auth': True}, {})
@@ -105,9 +104,9 @@ class AddToDataStore(CkanCommand):
         for package in packages:
             for resource in package.get('resources', []):
                 mimetype = resource['mimetype']
-                if mimetype and (mimetype not in self.DATA_FORMATS or
+                if mimetype and (mimetype not in DATA_FORMATS or
                                  resource['format'].lower()
-                                 not in self.DATA_FORMATS):
+                                 not in DATA_FORMATS):
                     logger.warn('Skipping resource {0} from package {1} '
                                 'because MIME type {2} or format {3} is '
                                 'unrecognized'.format(resource['url'],
@@ -124,7 +123,7 @@ class AddToDataStore(CkanCommand):
                 context,
                 resource,
                 self.max_content_length,
-                self.DATA_FORMATS
+                DATA_FORMATS
             )
         except Exception as e:
             print unicode(e)

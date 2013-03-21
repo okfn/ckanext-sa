@@ -266,8 +266,6 @@ def link_checker(context, data):
 def _update_resource(context, resource):
     """
     Use CKAN API to update the given resource.
-    If cannot update, records this fact in the task_status table.
-
     Returns the content of the response.
 
     """
