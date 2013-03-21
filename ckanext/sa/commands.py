@@ -104,9 +104,10 @@ class AddToDataStore(CkanCommand):
         for package in packages:
             for resource in package.get('resources', []):
                 mimetype = resource['mimetype']
-                if mimetype and (mimetype not in DATA_FORMATS or
+                if mimetype and not(mimetype in DATA_FORMATS or
                                  resource['format'].lower()
-                                 not in DATA_FORMATS):
+                                 in DATA_FORMATS):
+                    import pdb; pdb.set_trace()
                     logger.warn('Skipping resource {0} from package {1} '
                                 'because MIME type {2} or format {3} is '
                                 'unrecognized'.format(resource['url'],
