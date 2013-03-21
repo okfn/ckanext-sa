@@ -7,28 +7,41 @@ import requests
 import tempfile
 import urllib
 import urlparse
+import ckan.logic as logic
 
 
 HTTP_ERROR_CODES = {
     httplib.MULTIPLE_CHOICES: "300 Multiple Choices not implemented",
     httplib.USE_PROXY: "305 Use Proxy not implemented",
-    httplib.INTERNAL_SERVER_ERROR: "Internal server error on the remote server",
+    httplib.INTERNAL_SERVER_ERROR: "Internal server error on the remote "
+                                   "server",
     httplib.BAD_GATEWAY: "Bad gateway",
     httplib.SERVICE_UNAVAILABLE: "Service unavailable",
     httplib.GATEWAY_TIMEOUT: "Gateway timeout",
     httplib.METHOD_NOT_ALLOWED: "405 Method Not Allowed"
 }
 
+
 class DownloadError(Exception):
     pass
+
+
 class ChooseNotToDownload(Exception):
     pass
+
+
 class LinkCheckerError(Exception):
     pass
+
+
 class LinkInvalidError(LinkCheckerError):
     pass
+
+
 class LinkHeadRequestError(LinkCheckerError):
     pass
+
+
 class CkanError(Exception):
     pass
 
@@ -55,7 +68,7 @@ def download(context, resource, max_content_length, data_formats,
     url = resource['url']
 
     if (resource.get('resource_type') == 'file.upload' and
-        not url.startswith('http')):
+            not url.startswith('http')):
         url = context['site_url'].rstrip('/') + url
 
     link_context = "{}"
@@ -67,7 +80,7 @@ def download(context, resource, max_content_length, data_formats,
     headers = json.loads(link_checker(link_context, link_data))
 
     resource_format = resource['format'].lower()
-    ct = _clean_content_type( headers.get('content-type', '').lower() )
+    ct = _clean_content_type(headers.get('content-type', '').lower())
     cl = headers.get('content-length')
 
     resource_changed = False
@@ -76,8 +89,8 @@ def download(context, resource, max_content_length, data_formats,
         resource_changed = True
         resource['mimetype'] = ct
 
-    # this is to store the size in case there is an error, but the real size check
-    # is done after dowloading the data file, with its real length
+    # this is to store the size in case there is an error, but the real size
+    # check is done after dowloading the data file, with its real length
     if cl is not None and (resource.get('size') != cl):
         resource_changed = True
         resource['size'] = cl
@@ -87,18 +100,21 @@ def download(context, resource, max_content_length, data_formats,
         if resource_changed:
             _update_resource(context, resource)
         # record fact that resource is too large to archive
-        print ('Resource too large to download: %s > max (%s). Resource: %s %r',
-                 cl, max_content_length, resource['id'], url)
-        raise ChooseNotToDownload("Content-length %s exceeds maximum allowed value %s" %
-            (cl, max_content_length))
+        print ('Resource too large to download: %s > max (%s). '
+               'Resource: %s %r' % (cl, max_content_length, resource['id'],
+                                    url))
+        raise ChooseNotToDownload("Content-length %s exceeds maximum allowed "
+                                  "value %s" % (cl, max_content_length))
 
     # check that resource is a data file
-    if data_formats != 'all' and not (resource_format in data_formats or ct.lower() in data_formats):
+    if data_formats != 'all' and not (resource_format in data_formats or
+                                      ct.lower() in data_formats):
         if resource_changed:
             _update_resource(context, resource)
-        print ('Resource wrong type to download: %s / %s. Resource: %s %r',
-                 resource_format, ct.lower(), resource['id'], url)
-        raise ChooseNotToDownload('Of content type "%s" which is not a recognised data file for download' % ct)
+        print ('Resource wrong type to download: %s / %s. Resource: %s %r' %
+               (resource_format, ct.lower(), resource['id'], url))
+        raise ChooseNotToDownload('Of content type "%s" which is not a '
+                                  'recognised data file for download' % ct)
 
     # get the resource and archive it
     try:
@@ -116,7 +132,8 @@ def download(context, resource, max_content_length, data_formats,
     except Exception, e:
         raise DownloadError('Error with the download: %s' % e)
 
-    length, hash, saved_file = _save_resource(resource, res, max_content_length)
+    length, hash, saved_file = _save_resource(resource, res,
+                                              max_content_length)
 
     # check if resource size changed
     if unicode(length) != resource.get('size'):
@@ -132,18 +149,20 @@ def download(context, resource, max_content_length, data_formats,
         if resource_changed:
             _update_resource(context, resource)
         # record fact that resource is too large to archive
-        print ('Resource found to be too large to archive: %s > max (%s). Resource: %s %r',
-                 length, max_content_length, resource['id'], url)
-        raise ChooseNotToDownload("Content-length after streaming reached maximum allowed value of %s" %
-            max_content_length)
+        print ('Resource found to be too large to archive: %s > max (%s). '
+               'Resource: %s %r' % (length, max_content_length, resource['id'],
+                                    url))
+        raise ChooseNotToDownload("Content-length after streaming reached "
+                                  "maximum allowed value of %s"
+                                  % max_content_length)
 
     # zero length usually indicates a problem too
     if length == 0:
         if resource_changed:
             _update_resource(context, resource)
         # record fact that resource is zero length
-        print ('Resource found was zero length - not archiving. Resource: %s %r',
-                 resource['id'], url)
+        print ('Resource found was zero length - not archiving. '
+               'Resource: %s %r', resource['id'], url)
         raise DownloadError("Content-length after streaming was zero")
 
     # update the resource metadata in CKAN if the resource has changed
@@ -156,11 +175,11 @@ def download(context, resource, max_content_length, data_formats,
         except:
             pass
 
-    print ('Resource downloaded: id=%s url=%r cache_filename=%s length=%s hash=%s',
-             resource['id'], url, saved_file, length, hash)
+    print ('Resource downloaded: id=%s url=%r cache_filename=%s length=%s '
+           'hash=%s', resource['id'], url, saved_file, length, hash)
 
     return {'length': length,
-            'hash' : hash,
+            'hash': hash,
             'headers': headers,
             'saved_file': saved_file}
 
@@ -177,7 +196,6 @@ def link_checker(context, data):
     data = json.loads(data)
     url_timeout = data.get('url_timeout', 30)
 
-    success = True
     error_message = ''
     headers = {}
 
@@ -210,17 +228,23 @@ def link_checker(context, data):
             res = requests.head(url, timeout=url_timeout)
             headers = res.headers
         except httplib.InvalidURL, ve:
-            print ("Could not make a head request to %r, error is: %s. Package is: %r. This sometimes happens when using an old version of requests on a URL which issues a 301 redirect. Version=%s", url, ve, data.get('package'), requests.__version__)
+            print ("Could not make a head request to %r, error is: %s. Package"
+                   "is: %r. This sometimes happens when using an old version "
+                   "of requests on a URL which issues a 301 redirect. "
+                   "Version=%s" % (url, ve, data.get('package'),
+                                   requests.__version__))
             raise LinkHeadRequestError("Invalid URL or Redirect Link")
         except ValueError, ve:
-            print ("Could not make a head request to %r, error is: %s. Package is: %r.", url, ve, data.get('package'))
+            print ("Could not make a head request to %r, error is: %s. "
+                   "Package is: %r.", url, ve, data.get('package'))
             raise LinkHeadRequestError("Could not make HEAD request")
         except requests.exceptions.ConnectionError, e:
             raise LinkHeadRequestError('Connection error: %s' % e)
         except requests.exceptions.HTTPError, e:
             raise LinkHeadRequestError('Invalid HTTP response: %s' % e)
         except requests.exceptions.Timeout, e:
-            raise LinkHeadRequestError('Connection timed out after %ss' % url_timeout)
+            raise LinkHeadRequestError('Connection timed out after %ss'
+                                       % url_timeout)
         except requests.exceptions.TooManyRedirects, e:
             raise LinkHeadRequestError('Too many redirects')
         except requests.exceptions.RequestException, e:
@@ -230,11 +254,14 @@ def link_checker(context, data):
         else:
             if not res.ok or res.status_code >= 400:
                 if res.status_code in HTTP_ERROR_CODES:
-                    error_message = 'Server returned error: %s' % HTTP_ERROR_CODES[res.status_code]
+                    error_message = ('Server returned error: %s'
+                                     % HTTP_ERROR_CODES[res.status_code])
                 else:
-                    error_message = "URL unobtainable: Server returned HTTP %s" % res.status_code
+                    error_message = ("URL unobtainable: Server returned "
+                                     "HTTP %s" % res.status_code)
                 raise LinkHeadRequestError(error_message)
     return json.dumps(headers)
+
 
 def _update_resource(context, resource):
     """
@@ -244,29 +271,15 @@ def _update_resource(context, resource):
     Returns the content of the response.
 
     """
-    api_url = urlparse.urljoin(context['site_url'], 'api/action') + '/resource_update'
     resource['last_modified'] = datetime.now().isoformat()
-    post_data = json.dumps(resource)
-    res = requests.post(
-        api_url, post_data,
-        headers = {'Authorization': context['apikey'],
-                   'Content-Type': 'application/json'}
-    )
-
-    if res.status_code == 200:
-        print ('Resource updated OK: %s', resource['id'])
-        return res.content
-    else:
-        try:
-            content = res.content
-        except:
-            content = '<could not read request content to discover error>'
-        print ('ckan failed to update resource, status_code (%s), error %s. Maybe the API key or site URL are wrong?.\ncontext: %r\nresource: %r\nres: %r\nres.error: %r\npost_data: %r\napi_url: %r'
-                        % (res.status_code, content, context, resource, res, res.error, post_data, api_url))
-        raise CkanError('ckan failed to update resource, status_code (%s), error %s'  % (res.status_code, content))
+    try:
+        logic.get_action('resource_update')(context, resource)
+    except Exception as e:
+        print unicode(e)
+        raise CkanError('ckan failed to update resource')
 
 
-def _save_resource(resource, response, max_file_size, chunk_size = 1024*16):
+def _save_resource(resource, response, max_file_size, chunk_size=1024*16):
     """
     Write the response content to disk.
 
@@ -276,13 +289,12 @@ def _save_resource(resource, response, max_file_size, chunk_size = 1024*16):
     """
     resource_hash = hashlib.sha1()
     length = 0
-    saved_file = None
 
-    #tmp_resource_file = os.path.join(settings.ARCHIVE_DIR, 'archive_%s' % os.getpid())
     fd, tmp_resource_file_path = tempfile.mkstemp()
 
     with open(tmp_resource_file_path, 'wb') as fp:
-        for chunk in response.iter_content(chunk_size = chunk_size, decode_unicode=False):
+        for chunk in response.iter_content(chunk_size=chunk_size,
+                                           decode_unicode=False):
             fp.write(chunk)
             length += len(chunk)
             resource_hash.update(chunk)
@@ -294,4 +306,3 @@ def _save_resource(resource, response, max_file_size, chunk_size = 1024*16):
 
     content_hash = unicode(resource_hash.hexdigest())
     return length, content_hash, tmp_resource_file_path
-
