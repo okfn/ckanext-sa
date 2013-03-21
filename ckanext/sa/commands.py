@@ -2,7 +2,7 @@ import datetime
 import itertools
 import messytables
 from messytables import (AnyTableSet, types_processor, headers_guess,
-        headers_processor, type_guess, offset_processor)
+                         headers_processor, type_guess, offset_processor)
 from pylons import config
 from ckan.lib.cli import CkanCommand
 import ckan.logic as logic
@@ -14,19 +14,21 @@ logger = logging.getLogger()
 
 TYPE_MAPPING = {
     messytables.types.StringType: 'text',
-    messytables.types.IntegerType: 'numeric',  # 'int' may not be big enough,
-                    # and type detection may not realize it needs to be big
+    # 'int' may not be big enough,
+    # and type detection may not realize it needs to be big
+    messytables.types.IntegerType: 'numeric',
     messytables.types.FloatType: 'float',
     messytables.types.DecimalType: 'numeric',
     messytables.types.DateType: 'timestamp',
     messytables.types.DateUtilType: 'timestamp'
 }
 
+
 class DatastorerException(Exception):
     pass
 
 
-class DataStore(CkanCommand):
+class AddToDataStore(CkanCommand):
     """
     Upload all resources from the FileStore to the DataStore
 
@@ -42,7 +44,7 @@ class DataStore(CkanCommand):
     max_args = 1
     MAX_PER_PAGE = 50
     max_content_length = int(config.get('ckanext-archiver.max_content_length',
-        50000000))
+                             50000000))
 
     DATA_FORMATS = [
         'csv',
@@ -73,7 +75,7 @@ class DataStore(CkanCommand):
                 'limit': self.MAX_PER_PAGE,
             }
             packages = logic.get_action('current_package_list_with_resources')(
-                                        context, data_dict)
+                context, data_dict)
             if not packages:
                 raise StopIteration
             for package in packages:
@@ -85,14 +87,14 @@ class DataStore(CkanCommand):
         Parse command line arguments and call the appropriate method
         """
         if self.args and self.args[0] in ['--help', '-h', 'help']:
-            print Datastore.__doc__
+            print self.__doc__
             return
 
         if self.args:
             cmd = self.args[0]
         self._load_config()
         user = logic.get_action('get_site_user')({'model': model,
-                                            'ignore_auth': True}, {})
+                                                 'ignore_auth': True}, {})
         packages = self._get_all_packages()
         context = {
             'username': user.get('name'),
@@ -103,24 +105,27 @@ class DataStore(CkanCommand):
         for package in packages:
             for resource in package.get('resources', []):
                 mimetype = resource['mimetype']
-                if mimetype and (mimetype not in self.DATA_FORMATS
-                        or resource['format'].lower() not in
-                        self.DATA_FORMATS):
+                if mimetype and (mimetype not in self.DATA_FORMATS or
+                                 resource['format'].lower()
+                                 not in self.DATA_FORMATS):
                     logger.warn('Skipping resource {0} from package {1} '
-                            'because MIME type {2} or format {3} is '
-                            'unrecognized'.format(resource['url'],
-                            package['name'], mimetype, resource['format']))
+                                'because MIME type {2} or format {3} is '
+                                'unrecognized'.format(resource['url'],
+                                package['name'], mimetype, resource['format']))
                     continue
                 logger.info('Datastore resource from resource {0} from '
                             'package {0}'.format(resource['url'],
                                                  package['name']))
                 self.push_to_datastore(context, resource)
 
-
     def push_to_datastore(self, context, resource):
         try:
-            result  = download(context, resource,
-                    self.max_content_length, self.DATA_FORMATS)
+            result = download(
+                context,
+                resource,
+                self.max_content_length,
+                self.DATA_FORMATS
+            )
         except Exception as e:
             print unicode(e)
             return
@@ -128,7 +133,11 @@ class DataStore(CkanCommand):
                                         .split(';', 1)[0]  # remove parameters
 
         f = open(result['saved_file'], 'rb')
-        table_sets = AnyTableSet.from_fileobj(f, mimetype=content_type, extension=resource['format'].lower())
+        table_sets = AnyTableSet.from_fileobj(
+            f,
+            mimetype=content_type,
+            extension=resource['format'].lower()
+        )
 
         ##only first sheet in xls for time being
         row_set = table_sets.tables[0]
@@ -157,20 +166,28 @@ class DataStore(CkanCommand):
         guessed_type_names = [TYPE_MAPPING[type(gt)] for gt in guessed_types]
 
         def send_request(data):
-            data_dict = {'resource_id': resource['id'], 'fields':
-                    [dict(id=name, type=typename) for name, typename in
-                        zip(headers, guessed_type_names)], 'records': data}
+            data_dict = {
+                'resource_id': resource['id'],
+                'fields': [dict(id=name, type=typename) for name, typename
+                           in zip(headers, guessed_type_names)],
+                'records': data
+            }
             response = logic.get_action('datastore_create')(
-                    context, data_dict)
+                context,
+                data_dict
+            )
             return response
 
-        # Delete any existing data before proceeding. Otherwise 'datastore_create' will
-        # append to the existing datastore. And if the fields have significantly changed,
-        # it may also fail.
-        logger.info('Deleting existing datastore (it may not exist): {0}.'.format(resource['id']))
+        # Delete any existing data before proceeding. Otherwise
+        # 'datastore_create' will append to the existing datastore. And if the
+        # fields have significantly changed, it may also fail.
+        logger.info('Deleting existing datastore (it may not exist): '
+                    '{0}.'.format(resource['id']))
         try:
-            response = logic.get_action('datastore_delete')(context,
-                    {'resource_id': resource['id']})
+            logic.get_action('datastore_delete')(
+                context,
+                {'resource_id': resource['id']}
+            )
         except Exception as e:
             print unicode(e)
 
@@ -193,14 +210,17 @@ class DataStore(CkanCommand):
             count += len(data)
             send_request(data)
 
-        logger.info("There should be {n} entries in {res_id}.".format(n=count, res_id=resource['id']))
+        logger.info("There should be {n} entries in {res_id}.".format(
+            n=count,
+            res_id=resource['id']
+        ))
 
         resource.update({
             'webstore_url': 'active',
             'webstore_last_updated': datetime.datetime.now().isoformat()
         })
 
-        response = logic.get_action('resource_update')(context, resource)
+        logic.get_action('resource_update')(context, resource)
 
 
 def stringify_processor():
