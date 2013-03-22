@@ -9,8 +9,8 @@ import ckan.logic as logic
 import ckan.model as model
 from fetch_resource import download
 
-import logging
-logger = logging.getLogger()
+import logging as log
+log.basicConfig(filename='datastore_upload.log', level=log.DEBUG)
 
 TYPE_MAPPING = {
     messytables.types.StringType: 'text',
@@ -105,17 +105,19 @@ class AddToDataStore(CkanCommand):
             for resource in package.get('resources', []):
                 mimetype = resource['mimetype']
                 if mimetype and not(mimetype in DATA_FORMATS or
-                                 resource['format'].lower()
-                                 in DATA_FORMATS):
-                    import pdb; pdb.set_trace()
-                    logger.warn('Skipping resource {0} from package {1} '
-                                'because MIME type {2} or format {3} is '
-                                'unrecognized'.format(resource['url'],
-                                package['name'], mimetype, resource['format']))
+                                    resource['format'].lower()
+                                    in DATA_FORMATS):
+                    log.warn('Skipping resource {0} from package {1} because '
+                             'MIME type {2} or format {3} is '
+                             'unrecognized'.format(resource['url'],
+                                                   package['name'],
+                                                   mimetype,
+                                                   resource['format'])
+                             )
                     continue
-                logger.info('Datastore resource from resource {0} from '
-                            'package {0}'.format(resource['url'],
-                                                 package['name']))
+                log.info('Datastore resource from resource {0} from '
+                         'package {0}'.format(resource['url'],
+                                              package['name']))
                 self.push_to_datastore(context, resource)
 
     def push_to_datastore(self, context, resource):
@@ -127,7 +129,7 @@ class AddToDataStore(CkanCommand):
                 DATA_FORMATS
             )
         except Exception as e:
-            print unicode(e)
+            log.exception(e)
             return
         content_type = result['headers'].get('content-type', '')\
                                         .split(';', 1)[0]  # remove parameters
@@ -146,7 +148,7 @@ class AddToDataStore(CkanCommand):
         row_set.register_processor(offset_processor(offset + 1))
         row_set.register_processor(datetime_procesor())
 
-        logger.info('Header offset: {0}.'.format(offset))
+        log.info('Header offset: {0}.'.format(offset))
 
         guessed_types = type_guess(
             row_set.sample,
@@ -159,7 +161,7 @@ class AddToDataStore(CkanCommand):
             ],
             strict=True
         )
-        logger.info('Guessed types: {0}'.format(guessed_types))
+        log.info('Guessed types: {0}'.format(guessed_types))
         row_set.register_processor(types_processor(guessed_types, strict=True))
         row_set.register_processor(stringify_processor())
 
@@ -181,17 +183,17 @@ class AddToDataStore(CkanCommand):
         # Delete any existing data before proceeding. Otherwise
         # 'datastore_create' will append to the existing datastore. And if the
         # fields have significantly changed, it may also fail.
-        logger.info('Deleting existing datastore (it may not exist): '
-                    '{0}.'.format(resource['id']))
+        log.info('Deleting existing datastore (it may not exist): '
+                 '{0}.'.format(resource['id']))
         try:
             logic.get_action('datastore_delete')(
                 context,
                 {'resource_id': resource['id']}
             )
         except Exception as e:
-            print unicode(e)
+            log.exception(e)
 
-        logger.info('Creating: {0}.'.format(resource['id']))
+        log.info('Creating: {0}.'.format(resource['id']))
 
         # generates chunks of data that can be loaded into ckan
         # n is the maximum size of a chunk
@@ -210,7 +212,7 @@ class AddToDataStore(CkanCommand):
             count += len(data)
             send_request(data)
 
-        logger.info("There should be {n} entries in {res_id}.".format(
+        log.info("There should be {n} entries in {res_id}.".format(
             n=count,
             res_id=resource['id']
         ))

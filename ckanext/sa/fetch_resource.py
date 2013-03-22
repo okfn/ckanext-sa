@@ -2,6 +2,7 @@ from datetime import datetime
 import hashlib
 import httplib
 import json
+import logging as log
 import os
 import requests
 import tempfile
@@ -100,9 +101,9 @@ def download(context, resource, max_content_length, data_formats,
         if resource_changed:
             _update_resource(context, resource)
         # record fact that resource is too large to archive
-        print ('Resource too large to download: %s > max (%s). '
-               'Resource: %s %r' % (cl, max_content_length, resource['id'],
-                                    url))
+        log.warning('Resource too large to download: %s > max (%s). '
+                    'Resource: %s %r', cl, max_content_length, resource['id'],
+                    url)
         raise ChooseNotToDownload("Content-length %s exceeds maximum allowed "
                                   "value %s" % (cl, max_content_length))
 
@@ -111,8 +112,8 @@ def download(context, resource, max_content_length, data_formats,
                                       ct.lower() in data_formats):
         if resource_changed:
             _update_resource(context, resource)
-        print ('Resource wrong type to download: %s / %s. Resource: %s %r' %
-               (resource_format, ct.lower(), resource['id'], url))
+        log.warning('Resource wrong type to download: %s / %s. Resource: %s '
+                    '%r', resource_format, ct.lower(), resource['id'], url)
         raise ChooseNotToDownload('Of content type "%s" which is not a '
                                   'recognised data file for download' % ct)
 
@@ -149,9 +150,9 @@ def download(context, resource, max_content_length, data_formats,
         if resource_changed:
             _update_resource(context, resource)
         # record fact that resource is too large to archive
-        print ('Resource found to be too large to archive: %s > max (%s). '
-               'Resource: %s %r' % (length, max_content_length, resource['id'],
-                                    url))
+        log.warning('Resource found to be too large to archive: %s > max (%s).'
+                    ' Resource: %s %r', length, max_content_length,
+                    resource['id'], url)
         raise ChooseNotToDownload("Content-length after streaming reached "
                                   "maximum allowed value of %s"
                                   % max_content_length)
@@ -161,8 +162,8 @@ def download(context, resource, max_content_length, data_formats,
         if resource_changed:
             _update_resource(context, resource)
         # record fact that resource is zero length
-        print ('Resource found was zero length - not archiving. '
-               'Resource: %s %r', resource['id'], url)
+        log.warning('Resource found was zero length - not archiving. '
+                    'Resource: %s %r', resource['id'], url)
         raise DownloadError("Content-length after streaming was zero")
 
     # update the resource metadata in CKAN if the resource has changed
@@ -175,8 +176,8 @@ def download(context, resource, max_content_length, data_formats,
         except:
             pass
 
-    print ('Resource downloaded: id=%s url=%r cache_filename=%s length=%s '
-           'hash=%s', resource['id'], url, saved_file, length, hash)
+    log.warning('Resource downloaded: id=%s url=%r cache_filename=%s length=%s'
+                ' hash=%s', resource['id'], url, saved_file, length, hash)
 
     return {'length': length,
             'hash': hash,
@@ -228,15 +229,15 @@ def link_checker(context, data):
             res = requests.head(url, timeout=url_timeout)
             headers = res.headers
         except httplib.InvalidURL, ve:
-            print ("Could not make a head request to %r, error is: %s. Package"
-                   "is: %r. This sometimes happens when using an old version "
-                   "of requests on a URL which issues a 301 redirect. "
-                   "Version=%s" % (url, ve, data.get('package'),
-                                   requests.__version__))
+            log.warning("Could not make a head request to %r, error is: %s. "
+                        "Package is: %r. This sometimes happens when using an "
+                        "old version of requests on a URL which issues a 301 "
+                        "redirect. Version=%s", url, ve, data.get('package'),
+                        requests.__version__)
             raise LinkHeadRequestError("Invalid URL or Redirect Link")
         except ValueError, ve:
-            print ("Could not make a head request to %r, error is: %s. "
-                   "Package is: %r.", url, ve, data.get('package'))
+            log.warning("Could not make a head request to %r, error is: %s. "
+                        "Package is: %r.", url, ve, data.get('package'))
             raise LinkHeadRequestError("Could not make HEAD request")
         except requests.exceptions.ConnectionError, e:
             raise LinkHeadRequestError('Connection error: %s' % e)
@@ -273,7 +274,7 @@ def _update_resource(context, resource):
     try:
         logic.get_action('resource_update')(context, resource)
     except Exception as e:
-        print unicode(e)
+        log.exception(e)
         raise CkanError('ckan failed to update resource')
 
 
