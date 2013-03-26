@@ -24,8 +24,11 @@ setup(
 	],
 	entry_points=\
 	"""
-        [ckan.plugins]
+	[paste.paster_command]
+	datastore_upload = ckanext.sa.commands:AddToDataStore
+
+	[ckan.plugins]
 	# Add plugins here
-    sa_customizations=ckanext.sa.plugin:SACustomizations
+	sa_customizations=ckanext.sa.plugin:SACustomizations
 	""",
 )
