@@ -49,13 +49,13 @@ class DatastorerException(Exception):
 
 class AddToDataStore(CkanCommand):
     """
-    Upload all resources from the FileStore to the DataStore
+    Upload all resources with a url and a mimetype/format matching allowed
+    formats to the DataStore
 
     Usage:
 
-    paster datastore [package-id]
-            - Update all resources or just those belonging to a specific
-              package if a package id is provided.
+    paster datastore_upload
+            - Update all resources.
     """
     summary = __doc__.split('\n')[0]
     usage = __doc__
