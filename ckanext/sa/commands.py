@@ -9,8 +9,8 @@ import ckan.logic as logic
 import ckan.model as model
 from fetch_resource import download
 
-import logging as log
-log.basicConfig(filename='datastore_upload.log', level=log.DEBUG)
+import logging
+log = logging.getLogger()
 
 TYPE_MAPPING = {
     messytables.types.StringType: 'text',
