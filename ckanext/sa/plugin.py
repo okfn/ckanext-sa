@@ -31,7 +31,7 @@ class SACustomizations(plugins.SingletonPlugin):
                 config.get('extra_public_paths', '')])
         config['extra_template_paths'] = ','.join([template_dir,
                 config.get('extra_template_paths', '')])
-        config['ckan.site_logo'] = '/images/sa_logo.png'
+        config['ckan.site_logo'] = '/data.sa_logo.png'
         config['ckan.favicon'] = '/images/sa_favicon.ico'
 
         toolkit.add_resource('theme/fanstatic_library', 'ckanext-sa')
