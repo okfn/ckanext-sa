@@ -1,7 +1,7 @@
 {% ckan_extends %}
 
 {% block home_primary %}
-  <header style="font-size:16px; line-height:22px;">
+  <header>
     {% if g.site_intro_text %}
     {{ h.render_markdown(g.site_intro_text) }}
     {% else %}

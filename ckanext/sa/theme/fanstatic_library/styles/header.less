@@ -1,6 +1,7 @@
 header.account-masthead {
-	background-color: @saFadedColor;
+	background: @saFadedColor;
 	margin-bottom: 10px;
+	border-bottom: 1px solid darken(@saFadedColor, 10%);
 	.account {
 		color: #000;
 		ul li {
@@ -25,10 +26,14 @@ header.masthead {
 	padding: 0;
 	.container {
 		height: 100px;
+		width: auto;
 	}
 	.header-image {
+		width: 940px;
+		margin: 5px auto;
 		.logo {
 			display: block;
+			float: left;
 			width: 209px;
 			height: 41px;
 			margin-top: 15px;
@@ -37,6 +42,9 @@ header.masthead {
 				display: none;
 			}
 		}
+		.sa_logo {
+			float: right;
+		}
 	}
 	.content {
 		position: absolute;
@@ -44,15 +52,18 @@ header.masthead {
 		left: 0;
 		right: 0;
 		bottom: 0;
+		background-color: @saFadedColor;
+		border-top: 1px solid darken(@saFadedColor, 10%);
+	}
+	.inner {
+		position: relative;
+		width: 940px;
+		margin: 0 auto;
 	}
 	.navigation {
 		.clearfix();
 		float: none;
 		margin-right: 0;
-		background-color: @saFadedColor;
-		border: 1px solid darken(@saFadedColor, 10%);
-		border-bottom-width: 0;
-		.border-radius(3px 3px 0 0);
 		ul.nav {
 			margin: 0;
 			padding: 0 5px;

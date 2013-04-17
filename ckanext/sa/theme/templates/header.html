@@ -2,24 +2,30 @@
 
 {% block header_logo %}
   {% if g.site_logo %}
-    <a style="float:left;"  href="{{ h.url('home') }}"><img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }} Logo" title="{{ g.site_title }} Logo" /></a>
+    <a href="{{ h.url('home') }}"><img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }} Logo" title="{{ g.site_title }} Logo" /></a>
   {% else %}
     <h1>
       <a href="{{ h.url('home') }}">{{ g.site_title }}</a>
     </h1>
     {% if g.site_description %}<h2>{{ g.site_description }}</h2>{% endif %}
   {% endif %}
-  <a style="float:right;"  href="{{ h.url('home') }}"><img src="/south_australia_logo.png" alt="{{ g.site_title }} Logo" title="{{ g.site_title }} Logo" /></a>
+  <a href="{{ h.url('home') }}" class="sa_logo"><img src="/south_australia_logo.png" alt="{{ g.site_title }} Logo" title="{{ g.site_title }} Logo" /></a>
 {% endblock %}
 
 {% block header_site_navigation %}
-  <nav class="section navigation">
-    <ul class="nav nav-pills">
-      {{ h.build_nav_main(
-        ('search', _('Datasets')),
-        ('organizations_index', _('Organizations')),
-        ('about', _('About'))
-      ) }}
-    </ul>
-  </nav>
+  <div class="inner">
+    <nav class="section navigation">
+      <ul class="nav nav-pills">
+        {{ h.build_nav_main(
+          ('search', _('Datasets')),
+          ('organizations_index', _('Organizations')),
+          ('about', _('About'))
+        ) }}
+      </ul>
+    </nav>
+{% endblock %}
+
+{% block header_site_search %}
+    {{ super() }}
+  </div>
 {% endblock %}

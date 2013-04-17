@@ -57,8 +57,9 @@ a {
   border-bottom-color: #e4e4cd;
 }
 header.account-masthead {
-  background-color: #f6f6ee;
+  background: #f6f6ee;
   margin-bottom: 10px;
+  border-bottom: 1px solid #e4e4cd;
 }
 header.account-masthead .account {
   color: #000;
@@ -83,9 +84,15 @@ header.masthead {
 }
 header.masthead .container {
   height: 100px;
+  width: auto;
+}
+header.masthead .header-image {
+  width: 940px;
+  margin: 5px auto;
 }
 header.masthead .header-image .logo {
   display: block;
+  float: left;
   width: 209px;
   height: 41px;
   margin-top: 15px;
@@ -94,22 +101,26 @@ header.masthead .header-image .logo {
 header.masthead .header-image .logo img {
   display: none;
 }
+header.masthead .header-image .sa_logo {
+  float: right;
+}
 header.masthead .content {
   position: absolute;
   top: auto;
   left: 0;
   right: 0;
   bottom: 0;
+  background-color: #f6f6ee;
+  border-top: 1px solid #e4e4cd;
+}
+header.masthead .inner {
+  position: relative;
+  width: 940px;
+  margin: 0 auto;
 }
 header.masthead .navigation {
   float: none;
   margin-right: 0;
-  background-color: #f6f6ee;
-  border: 1px solid #e4e4cd;
-  border-bottom-width: 0;
-  -webkit-border-radius: 3px 3px 0 0;
-  -moz-border-radius: 3px 3px 0 0;
-  border-radius: 3px 3px 0 0;
 }
 header.masthead .navigation ul.nav {
   margin: 0;
@@ -145,12 +156,17 @@ header.masthead .site-search input[type="text"] {
   padding: 2px 8px;
 }
 .hero {
-  background: url("/base/images/background-tile.png");
+  background: transparent url(/map.jpg) 50% 0 no-repeat;
   border-bottom-width: 0;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+  padding: 40px 0;
 }
 .hero .module-dark .module-content {
   background-color: #ca7400;
+}
+.hero-primary {
+  font-size: 16px;
+  line-height: 22px;
 }
