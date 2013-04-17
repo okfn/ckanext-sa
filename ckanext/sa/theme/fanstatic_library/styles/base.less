@@ -15,10 +15,7 @@ body {
 
 .main,
 [role="main"] {
-	// width: 980px;
-	// margin: 0 auto;
 	background: @saContentColor;
-	// border: 1px solid darken(@saContentColor, 20%);
 	border-top: 4px solid @saPrimaryColor;
 	.border-radius(0 0 3px 3px);
 }
@@ -50,4 +47,11 @@ a {
 
 .module-heading {
 	border-bottom-color: darken(@saFadedColor, 10%);
+}
+
+.control-order-by {
+	bottom: -60px;
+	select {
+		margin-bottom: 0;
+	}
 }

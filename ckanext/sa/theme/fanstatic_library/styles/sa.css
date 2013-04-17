@@ -56,6 +56,12 @@ a {
 .module-heading {
   border-bottom-color: #e4e4cd;
 }
+.control-order-by {
+  bottom: -60px;
+}
+.control-order-by select {
+  margin-bottom: 0;
+}
 header.account-masthead {
   background: #f6f6ee;
   margin-bottom: 10px;
@@ -169,4 +175,18 @@ header.masthead .site-search input[type="text"] {
 .hero-primary {
   font-size: 16px;
   line-height: 22px;
+}
+.ie7 .toolbar .breadcrumb li {
+  background-image: url(/images/breadcrumb-slash-ie7.png);
+}
+.ie7 .sa_logo {
+  margin-top: -50px;
+}
+.ie7 .control-order-by select {
+  position: relative;
+  top: 2px;
+}
+.ie7 .box {
+  margin-left: 0;
+  margin-right: 0;
 }
