@@ -1,7 +1,7 @@
 {% ckan_extends %}
 {% block footer_content %}
-  <nav class="row-fluid">
-      <ul class="unstyled" style="float:left; margin-right:6em;">
+  <nav>
+      <ul class="unstyled">
         <li><a href="/">{{ _('Home') }}</a></li>
         <li><a href="{{ h.url_for(controller='home', action='about') }}">{{ _('About {0}').format(g.site_title) }}</a></li>
         <li><a href="/accessibility">{{ _('Accessibility') }}</a></li>
@@ -11,24 +11,27 @@
         <li><a href="/contact">{{ _('Contact') }}</a></li>
         <li><a href="/copyright">{{ _('Copyright') }}</a></li>
       </ul>
-      <ul class="unstyled" style="float:left; margin-right:6em;">
+      <ul class="unstyled">
         {% set api_url = 'http://docs.ckan.org/{0}/{1}/api.html'.format(request.environ.CKAN_LANG, g.ckan_doc_version) %}
         <li><a href="{{ api_url }}">{{ _('CKAN API') }}</a></li>
         <li><a href="http://www.okfn.org/">{{ _('Open Knowledge Foundation') }}</a></li>
         <li><a href="http://www.opendefinition.org/okd/"><img src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png"></a></li>
       </ul>
-      <div class="attribution" style="float:left; width:200px;">
+      <div class="attribution">
         <p>{% trans %}<strong>Powered by</strong> <a class="hide-text ckan-footer-logo" href="http://ckan.org">CKAN</a>{% endtrans %}</p>
         {% snippet "snippets/language_selector.html" %}
       </div>
-      <div style="text-align:right; clear:both;">
-        <p><a href="http://creativecommons.org/licenses/by/3.0/au/">
-          <img src="/ccby.png" title="Creative Commons License Information" alt="Creative Commons License Information">
-        </a></p>
-        <p>This Government of South Australia website is licensed under a<br/>
-        <a href="/copyright">Creative Commons Attribution 3.0 Australia Licence</a>. &copy; Copyright 2013</p>
-      </div>
   </nav>
-  <img src="/sa.gov.au_logo.png" width="178">
-  <img src="/south_australia_logo_2.jpg" style="margin-left:40px;">
+  <div class="clearfix">
+    <div class="sa-copyright">
+      <p><a href="http://creativecommons.org/licenses/by/3.0/au/">
+        <img src="/ccby.png" title="Creative Commons License Information" alt="Creative Commons License Information">
+      </a></p>
+      <p>This Government of South Australia website is licensed under a<br/>
+      <a href="/copyright">Creative Commons Attribution 3.0 Australia Licence</a>. &copy; Copyright 2013</p>
+      <p>Map data &copy; OpenStreetMap contributors, CC-BY-SA, map imagery &copy; CloudMade</p>
+    </div>
+    <img src="/sa.gov.au_logo.png">
+    <img src="/south_australia_logo_2.jpg" class="m-left">
+  </div>
 {% endblock %}

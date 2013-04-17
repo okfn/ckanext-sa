@@ -25,6 +25,19 @@ body {
 .site-footer a {
   color: #197fc9;
 }
+.site-footer .sa-copyright {
+  float: right;
+  text-align: right;
+}
+.site-footer nav {
+  clear: both;
+  overflow: hidden;
+}
+.site-footer nav .unstyled,
+.site-footer nav .attribution {
+  float: left;
+  width: 230px;
+}
 .main,
 [role="main"] {
   background: #ffffff;
