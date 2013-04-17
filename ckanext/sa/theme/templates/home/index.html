@@ -23,7 +23,6 @@
 {% endblock %}
 
 {% block secondary_content %}
-  {% set featured_orgs = ('test', 'test-2') %}
   <div class="row group-listing">
     {% for org_name in featured_orgs %}
       {% set org_dict = h.organization_show(org_name) %}
