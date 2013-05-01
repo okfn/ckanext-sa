@@ -6,6 +6,34 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import ckan.lib.base as base
 
+def organization_datasets_show(org_id):
+    '''Return a list of an organization's datasets.
+
+    Returns a list of dataset dicts.
+
+    organization_show() already returns the organization's datasets in the
+    organization dict, but these are in a different order to on the
+    organization's page (which uses a package_search() to get the datasets).
+
+    This method uses a package_search() to get the datasets in the same order
+    as on the organization's page.
+
+    This is a workaround for <https://github.com/okfn/ckan/issues/860>
+
+    '''
+    data_dict = {
+            'sort': None,
+            'fq': '',
+            'rows': 20,
+            'facet.field': ['organization', 'groups', 'tags', 'res_format',
+                'license_id'],
+            'q': u' owner_org:"{org_id}"'.format(org_id=org_id),
+            'start': 0,
+            'extras': {},
+            }
+    response = toolkit.get_action('package_search')(data_dict=data_dict)
+    return response['results']
+
 
 def organization_show(name):
     '''Return the organization dict for the given organization.'''
@@ -62,7 +90,8 @@ class SACustomizations(plugins.SingletonPlugin):
         return route_map
 
     def get_helpers(self):
-        return {'organization_show': organization_show}
+        return {'organization_show': organization_show,
+                'organization_datasets_show': organization_datasets_show}
 
 
 class SAController(base.BaseController):
