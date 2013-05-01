@@ -26,6 +26,6 @@ setup(
 	"""
         [ckan.plugins]
 	# Add plugins here
-    sa_customizations=ckanext.sa.plugin:SACustomizations
+    sa=ckanext.sa.plugin:SACustomizations
 	""",
 )
