@@ -122,6 +122,7 @@ header.masthead .header-image .logo img {
 }
 header.masthead .header-image .sa_logo {
   float: right;
+  margin-top: -7px;
 }
 header.masthead .content {
   position: absolute;
