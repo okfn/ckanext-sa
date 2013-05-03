@@ -194,7 +194,7 @@ header.masthead .site-search input[type="text"] {
   background-image: url(/images/breadcrumb-slash-ie7.png);
 }
 .ie7 .sa_logo {
-  margin-top: -50px;
+  margin-top: -57px !important;
 }
 .ie7 .control-order-by select {
   position: relative;
