@@ -39,7 +39,13 @@
       {% endif %}
       </p>
     </section>
-  {% endif %}
+    {% else %}
+      {% if 'license_url' in pkg_dict %}
+        <a href="{{ pkg_dict.license_url }}" rel="dc:rights">{{ pkg_dict.license_title }}</a>
+      {% else %}
+        <span property="dc:rights">{{ pkg_dict.license_title }}</span>
+      {% endif %}
+    {% endif %}
 {% elif text_only %}
   {{ _('No License Provided') }}
 {% endif %}
