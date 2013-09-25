@@ -8,7 +8,7 @@ Custom CKAN extension for [data.sa.gov.au](http://data.sa.gov.au/)
 
 2. Install ckanext-pdeu. Activate your CKAN virtual environment and:
 
-        git clone git@github.com:okfn/ckanext-sa.git
+        git clone https://github.com/okfn/ckanext-sa.git
         cd ckanext-sa
         python setup.py develop
 
