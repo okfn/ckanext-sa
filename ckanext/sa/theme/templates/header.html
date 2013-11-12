@@ -17,6 +17,16 @@
     {{ super() }}
 {% endblock %}
 
+{% block header_site_navigation_tabs %}
+{{ h.build_nav_main(
+  ('search', _('Datasets')),
+  ('organizations_index', _('Organizations')),
+  ('group_index', _('Groups')),
+  ('about', _('About')),
+  ('related_dashboard', _('Apps & Ideas'))
+) }}
+{% endblock %}
+
 {% block header_site_search %}
     {{ super() }}
   </div>
