@@ -6,6 +6,8 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import ckan.lib.base as base
 
+import ckan.new_authz as authz
+
 def organization_datasets_show(org_id):
     '''Return a list of an organization's datasets.
 
@@ -38,6 +40,11 @@ def organization_datasets_show(org_id):
 def organization_show(name):
     '''Return the organization dict for the given organization.'''
     return toolkit.get_action('organization_show')(data_dict={'id': name})
+
+
+def am_sysadmin():
+    user_name = toolkit.c.user
+    return authz.is_sysadmin(user_name)
 
 
 class SACustomizations(plugins.SingletonPlugin):
@@ -91,7 +98,9 @@ class SACustomizations(plugins.SingletonPlugin):
 
     def get_helpers(self):
         return {'organization_show': organization_show,
-                'organization_datasets_show': organization_datasets_show}
+                'organization_datasets_show': organization_datasets_show,
+                'am_sysadmin': am_sysadmin,
+               }
 
 
 class SAController(base.BaseController):
