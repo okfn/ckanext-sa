@@ -15,12 +15,29 @@ Custom CKAN extension for [data.sa.gov.au](http://data.sa.gov.au/)
 3. Edit the following settings to the `[app:main]` section of your CKAN config
    file (e.g. `development.ini` or `sa.ini`):
 
-        ckan.plugins = stats sa_customizations
+        ckan.plugins = stats sa datastore googleanalytics pages resource_proxy recline_preview pdf_preview text_preview
         ckan.site_title = data.sa.gov.au
         ckan.site_description = South Australian Government Data Directory
+        ckan.featured_organizations = department-of-planning-transport-and-infrastructure, state-library-of-south-australia
+
+        ckan.auth.anon_create_dataset = false
+        ckan.auth.create_dataset_if_not_in_organization = false
+        ckan.auth.user_create_organizations = false
+        ckan.auth.user_create_groups = false
+        ckan.auth.user_delete_groups = false
+        ckan.auth.user_delete_organizations = false
+
+        ckan.locale_default = en_GB
+
+        ckan.tracking_enabled = true
+
+        googleanalytics.id = xxxx
+        googleanalytics.account = xxxx
+        googleanalytics.username = xxxx
+        googleanalytics.password = xxxx
+
 
 4. Run CKAN, e.g. `paster serve sa.ini`
 
 Note on CKAN versions: at the time of writing the `master` branch of
-ckanext-sa is intended to work with CKAN 2.0 (currently the `master` branch
-of ckan).
+ckanext-sa is intended to work with CKAN 2.1.1.
