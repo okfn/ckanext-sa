@@ -46,6 +46,20 @@ def am_sysadmin():
     user_name = toolkit.c.user
     return authz.is_sysadmin(user_name)
 
+def related_types(default_types):
+    # TODO: this should be done better, Visualization should be modified in the en_AU
+    # translation and the available types should be configurable elsewehere
+    new_types = []
+    for type_ in default_types:
+        if type_['value'] == 'visualization':
+            new_types.append({'text': toolkit._('Visualisation'), 'value': 'visualization'})
+        elif type_['value'] == 'post':
+            pass
+        else:
+            new_types.append(type_)
+
+    return new_types
+
 
 class SACustomizations(plugins.SingletonPlugin):
     plugins.implements(plugins.IRoutes)
@@ -100,6 +114,7 @@ class SACustomizations(plugins.SingletonPlugin):
         return {'organization_show': organization_show,
                 'organization_datasets_show': organization_datasets_show,
                 'am_sysadmin': am_sysadmin,
+                'related_types': related_types
                }
 
 
