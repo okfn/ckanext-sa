@@ -28,7 +28,7 @@ This site includes links to other websites operated by community, business and g
         <label for="field-type">{{ _('Filter by type') }}</label>
         <select id="field-type" name="type">
           <option value="">{{ _('All') }}</option>
-          {% for option in c.type_options %}
+          {% for option in h.related_types(c.type_options) %}
             <option value="{{ option.value }}"{% if c.filters.type == option.value %} selected="selected"{% endif %}>{{ option.text or option.value }}</option>
           {% endfor %}
         </select>
