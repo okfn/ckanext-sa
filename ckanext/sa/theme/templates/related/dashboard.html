@@ -1,0 +1,59 @@
+{% ckan_extends %}
+
+{% block secondary_content %}
+  <section class="module module-narrow module-shallow">
+    <h2 class="module-heading">{{ _('What are applications?') }}</h2>
+    <div class="module-content">
+      {% trans %}
+        <p>
+Check out some of the cool Apps & Ideas created using South Australian government data available on <a href="http://data.s.gov.au">data.sa.gov.au</a>.
+        </p>
+        <p>
+We value the innovative outcomes from using government data and connecting with us may provide opportunities for us to feature your Apps, Ideas, Visualisations, News, or APIs.  Please <a href="mailto:datasa@sa.gov.au">contact us</a> to share your work.
+ 
+        </p>
+        <p>
+This site includes links to other websites operated by community, business and government. All linked websites are linked 'as is' and the Government of South Australia does not sponsor, endorse or necessarily approve of any material on websites linked from or to this Site. For further information, please refer to our <a href="http://data.sa.gov.au/disclaimer">disclaimer</a>.      
+        </p>
+      {% endtrans %}
+    </div>
+  </section>
+
+  <section class="module module-narrow module-shallow">
+    <h2 class="module-heading">{{ _('Filter Results') }}</h2>
+    <form action="" method="get" class="module-content form-inline form-narrow">
+      <input type='hidden' name='page' value='1'/>
+
+      <div class="control-group">
+        <label for="field-type">{{ _('Filter by type') }}</label>
+        <select id="field-type" name="type">
+          <option value="">{{ _('All') }}</option>
+          {% for option in c.type_options %}
+            <option value="{{ option.value }}"{% if c.filters.type == option.value %} selected="selected"{% endif %}>{{ option.text or option.value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="field-sort">{{ _('Sort by') }}</label>
+        <select id="field-sort" name="sort">
+          <option value="">{{ _('Default') }}</option>
+          {% for option in c.sort_options %}
+            <option value="{{ option.value }}"{% if c.filters.sort == option.value %} selected="selected"{% endif %}>{{ option.text or option.value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="field-featured" class="checkbox">
+          <input type="checkbox" id="field-featured" name="featured" {% if c.filters.get('featured') == 'on' %} checked="checked"{% endif %}></input>
+          {{ _('Only show featured items') }}
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary">{{ _('Apply') }}</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}
